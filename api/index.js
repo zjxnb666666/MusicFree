@@ -3,7 +3,7 @@ const axios = require('axios')
 const app = express()
 
 // 基础配置
-const BASE_URL = 'https://netease-cloud-music-api-rust-phi.vercel.app'  // 使用第三方 API
+const BASE_URL = 'https://musicfreepluginshub.2020818.xyz'  // MusicFree 官方 API
 const DEFAULT_TIMEOUT = 5000
 
 // 创建 axios 实例
@@ -26,38 +26,22 @@ app.use((err, req, res, next) => {
 app.get('/search', async (req, res) => {
   try {
     const { platform = 'netease', keyword, page = 1, pageSize = 30 } = req.query
+    
+    // 使用 MusicFree 插件 API
     const response = await request.get('/search', {
       params: {
-        keywords: keyword,
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        type: 1
+        platform,
+        keyword,
+        page,
+        pageSize
       }
     })
 
-    // 检查响应数据
     if (!response.data || response.data.code !== 200) {
-      throw new Error('Invalid response from music API')
+      throw new Error('Invalid response from API')
     }
 
-    // 格式化返回数据为 MusicFree 格式
-    const songs = response.data.result?.songs || []
-    const formattedSongs = songs.map(song => ({
-      id: song.id,
-      title: song.name,
-      artist: song.artists?.[0]?.name || '',
-      artwork: song.album?.picUrl || '',
-      album: song.album?.name || '',
-      url: '', // URL 需要通过 /song/url 接口获取
-      duration: song.duration ? Math.floor(song.duration / 1000) : 0,
-      platform: 'netease'
-    }))
-
-    res.json({
-      code: 200,
-      msg: 'success',
-      data: formattedSongs
-    })
+    res.json(response.data)  // 直接返回 MusicFree 格式的数据
   } catch (error) {
     console.error('Search error:', error)
     res.status(500).json({ 
@@ -72,33 +56,51 @@ app.get('/search', async (req, res) => {
 app.get('/song/url', async (req, res) => {
   try {
     const { platform = 'netease', id } = req.query
+    
     const response = await request.get('/song/url', {
       params: {
-        id,
-        br: 320000
+        platform,
+        id
       }
     })
 
-    const data = response.data?.data?.[0]
-    if (!data || !data.url) {
-      throw new Error('Song URL not found')
+    if (!response.data || response.data.code !== 200) {
+      throw new Error('Invalid response from API')
     }
 
-    res.json({
-      code: 200,
-      msg: 'success',
-      data: {
-        url: data.url,
-        size: data.size,
-        br: data.br,
-        platform: 'netease'
-      }
-    })
+    res.json(response.data)  // 直接返回 MusicFree 格式的数据
   } catch (error) {
     console.error('Get song URL error:', error)
     res.status(500).json({ 
       code: 500,
       msg: 'Failed to get song URL',
+      error: error.message
+    })
+  }
+})
+
+// 获取歌单
+app.get('/playlist', async (req, res) => {
+  try {
+    const { platform = 'netease', id } = req.query
+    
+    const response = await request.get('/playlist', {
+      params: {
+        platform,
+        id
+      }
+    })
+
+    if (!response.data || response.data.code !== 200) {
+      throw new Error('Invalid response from API')
+    }
+
+    res.json(response.data)  // 直接返回 MusicFree 格式的数据
+  } catch (error) {
+    console.error('Get playlist error:', error)
+    res.status(500).json({ 
+      code: 500,
+      msg: 'Failed to get playlist',
       error: error.message
     })
   }
