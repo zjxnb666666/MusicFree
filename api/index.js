@@ -31,9 +31,9 @@ app.use((err, req, res, next) => {
 app.get('/search', async (req, res) => {
   try {
     const { keywords, limit = 30, offset = 0 } = req.query
-    const response = await request.get('/search/pc', {
+    const response = await request.get('/cloudsearch', {
       params: {
-        s: keywords,
+        keywords,
         limit,
         offset,
         type: 1
@@ -45,10 +45,10 @@ app.get('/search', async (req, res) => {
     const formattedSongs = songs.map(song => ({
       id: song.id,
       name: song.name,
-      artist: song.artists?.[0]?.name || '',
-      album: song.album?.name || '',
-      cover: song.album?.picUrl || '',
-      duration: song.duration ? song.duration / 1000 : 0
+      artist: song.ar?.[0]?.name || '',
+      album: song.al?.name || '',
+      cover: song.al?.picUrl || '',
+      duration: song.dt ? song.dt / 1000 : 0
     }))
 
     res.json({
@@ -220,4 +220,4 @@ app.get('/status', (req, res) => {
   })
 })
 
-module.exports = app
+module.exports = app 
