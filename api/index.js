@@ -3,19 +3,13 @@ const axios = require('axios')
 const app = express()
 
 // 基础配置
-const BASE_URL = 'https://music.163.com'  // 修改基础URL
+const BASE_URL = 'https://netease-cloud-music-api-rust-phi.vercel.app'  // 使用稳定的第三方 API
 const DEFAULT_TIMEOUT = 5000
 
 // 创建 axios 实例
 const request = axios.create({
   baseURL: BASE_URL,
-  timeout: DEFAULT_TIMEOUT,
-  headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    'Referer': 'https://music.163.com',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Cookie': 'NMTID=00OJ_vv9oqXwqq8TQihfVrQ5sqYd6kAAAGLCQljYQ'
-  }
+  timeout: DEFAULT_TIMEOUT
 })
 
 // 错误处理中间件
@@ -32,24 +26,29 @@ app.use((err, req, res, next) => {
 app.get('/search', async (req, res) => {
   try {
     const { keywords, limit = 30, offset = 0 } = req.query
-    const response = await request.get('/weapi/cloudsearch/get/web', {
+    const response = await request.get('/search', {
       params: {
         keywords,
         limit,
         offset,
-        type: 1
+        type: 1  // 1: 单曲
       }
     })
 
-    // 检查并格式化响应数据
-    const songs = response.data?.result?.songs || []
+    // 检查响应数据
+    if (!response.data || response.data.code !== 200) {
+      throw new Error('Invalid response from music API')
+    }
+
+    // 格式化返回数据
+    const songs = response.data.result?.songs || []
     const formattedSongs = songs.map(song => ({
       id: song.id,
       name: song.name,
-      artist: song.ar?.[0]?.name || '',
-      album: song.al?.name || '',
-      cover: song.al?.picUrl || '',
-      duration: song.dt ? song.dt / 1000 : 0
+      artist: song.artists?.[0]?.name || '',
+      album: song.album?.name || '',
+      cover: song.album?.picUrl || '',
+      duration: song.duration ? song.duration / 1000 : 0
     }))
 
     res.json({
