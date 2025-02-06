@@ -3,7 +3,7 @@ const axios = require('axios')
 const app = express()
 
 // 基础配置
-const BASE_URL = 'https://music.163.com/api'  // 修改为普通 api 接口
+const BASE_URL = 'https://music.163.com'  // 修改基础URL
 const DEFAULT_TIMEOUT = 5000
 
 // 创建 axios 实例
@@ -13,7 +13,8 @@ const request = axios.create({
   headers: {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     'Referer': 'https://music.163.com',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Cookie': 'NMTID=00OJ_vv9oqXwqq8TQihfVrQ5sqYd6kAAAGLCQljYQ'
   }
 })
 
@@ -31,7 +32,7 @@ app.use((err, req, res, next) => {
 app.get('/search', async (req, res) => {
   try {
     const { keywords, limit = 30, offset = 0 } = req.query
-    const response = await request.get('/cloudsearch', {
+    const response = await request.get('/weapi/cloudsearch/get/web', {
       params: {
         keywords,
         limit,
