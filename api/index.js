@@ -3,7 +3,7 @@ const axios = require('axios')
 const app = express()
 
 // 基础配置
-const BASE_URL = 'https://music.163.com/weapi'  // 修改为 weapi
+const BASE_URL = 'https://music.163.com/api'  // 修改为普通 api 接口
 const DEFAULT_TIMEOUT = 5000
 
 // 创建 axios 实例
@@ -13,36 +13,50 @@ const request = axios.create({
   headers: {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     'Referer': 'https://music.163.com',
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json'
   }
+})
+
+// 错误处理中间件
+app.use((err, req, res, next) => {
+  console.error('Error:', err)
+  res.status(500).json({
+    code: 500,
+    message: 'Internal Server Error',
+    error: err.message
+  })
 })
 
 // 搜索接口
 app.get('/search', async (req, res) => {
   try {
     const { keywords, limit = 30, offset = 0 } = req.query
-    const response = await request.post('/cloudsearch', {
-      keywords,
-      limit,
-      offset,
-      type: 1
+    const response = await request.get('/search/pc', {
+      params: {
+        s: keywords,
+        limit,
+        offset,
+        type: 1
+      }
     })
 
-    // 格式化返回数据
-    const songs = response.data.result.songs.map(song => ({
+    // 检查并格式化响应数据
+    const songs = response.data?.result?.songs || []
+    const formattedSongs = songs.map(song => ({
       id: song.id,
       name: song.name,
-      artist: song.ar[0].name,
-      album: song.al.name,
-      cover: song.al.picUrl,
-      duration: song.dt / 1000
+      artist: song.artists?.[0]?.name || '',
+      album: song.album?.name || '',
+      cover: song.album?.picUrl || '',
+      duration: song.duration ? song.duration / 1000 : 0
     }))
 
     res.json({
       code: 200,
-      result: songs
+      result: formattedSongs
     })
   } catch (error) {
+    console.error('Search error:', error)
     res.status(500).json({ 
       code: 500,
       msg: 'Search failed',
@@ -55,26 +69,34 @@ app.get('/search', async (req, res) => {
 app.get('/song/detail', async (req, res) => {
   try {
     const { id } = req.query
-    const response = await request.post('/v3/song/detail', {
-      c: JSON.stringify([{ id }])
+    const response = await request.get('/song/detail', {
+      params: {
+        ids: id
+      }
     })
 
-    const song = response.data.songs[0]
+    const song = response.data?.songs?.[0]
+    if (!song) {
+      throw new Error('Song not found')
+    }
+
     res.json({
       code: 200,
       result: {
         id: song.id,
         name: song.name,
-        artist: song.ar[0].name,
-        album: song.al.name,
-        cover: song.al.picUrl,
-        duration: song.dt / 1000
+        artist: song.artists?.[0]?.name || '',
+        album: song.album?.name || '',
+        cover: song.album?.picUrl || '',
+        duration: song.duration ? song.duration / 1000 : 0
       }
     })
   } catch (error) {
+    console.error('Get song detail error:', error)
     res.status(500).json({ 
       code: 500,
-      msg: 'Failed to get song detail' 
+      msg: 'Failed to get song detail',
+      error: error.message
     })
   }
 })
@@ -83,24 +105,33 @@ app.get('/song/detail', async (req, res) => {
 app.get('/song/url', async (req, res) => {
   try {
     const { id } = req.query
-    const response = await request.post('/song/enhance/player/url', {
-      ids: [id],
-      br: 320000
+    const response = await request.get('/song/url', {
+      params: {
+        id,
+        br: 320000
+      }
     })
+
+    const data = response.data?.data?.[0]
+    if (!data || !data.url) {
+      throw new Error('Song URL not found')
+    }
 
     res.json({
       code: 200,
       result: {
-        id: response.data.data[0].id,
-        url: response.data.data[0].url,
-        br: response.data.data[0].br,
-        size: response.data.data[0].size
+        id: data.id,
+        url: data.url,
+        br: data.br,
+        size: data.size
       }
     })
   } catch (error) {
+    console.error('Get song URL error:', error)
     res.status(500).json({ 
       code: 500,
-      msg: 'Failed to get song URL' 
+      msg: 'Failed to get song URL',
+      error: error.message
     })
   }
 })
@@ -109,13 +140,15 @@ app.get('/song/url', async (req, res) => {
 app.get('/playlist', async (req, res) => {
   try {
     const { id } = req.query
-    const response = await request.post('/v3/playlist/detail', {
-      id,
-      n: 100000,
-      s: 8
+    const response = await request.get('/playlist/detail', {
+      params: { id }
     })
 
-    const playlist = response.data.playlist
+    const playlist = response.data?.playlist
+    if (!playlist) {
+      throw new Error('Playlist not found')
+    }
+
     res.json({
       code: 200,
       result: {
@@ -123,20 +156,22 @@ app.get('/playlist', async (req, res) => {
         name: playlist.name,
         cover: playlist.coverImgUrl,
         description: playlist.description,
-        tracks: playlist.tracks.map(song => ({
+        tracks: (playlist.tracks || []).map(song => ({
           id: song.id,
           name: song.name,
-          artist: song.ar[0].name,
-          album: song.al.name,
-          cover: song.al.picUrl,
-          duration: song.dt / 1000
+          artist: song.artists?.[0]?.name || '',
+          album: song.album?.name || '',
+          cover: song.album?.picUrl || '',
+          duration: song.duration ? song.duration / 1000 : 0
         }))
       }
     })
   } catch (error) {
+    console.error('Get playlist error:', error)
     res.status(500).json({ 
       code: 500,
-      msg: 'Failed to get playlist' 
+      msg: 'Failed to get playlist',
+      error: error.message
     })
   }
 })
@@ -145,15 +180,21 @@ app.get('/playlist', async (req, res) => {
 app.get('/genre', async (req, res) => {
   try {
     const { type } = req.query
-    const response = await request.post('/playlist/highquality/list', {
-      cat: type,
-      limit: 20,
-      offset: 0
+    const response = await request.get('/playlist/highquality', {
+      params: {
+        cat: type,
+        limit: 20
+      }
     })
+
+    const playlists = response.data?.playlists
+    if (!playlists) {
+      throw new Error('No playlists found for this genre')
+    }
 
     res.json({
       code: 200,
-      result: response.data.playlists.map(playlist => ({
+      result: playlists.map(playlist => ({
         id: playlist.id,
         name: playlist.name,
         cover: playlist.coverImgUrl,
@@ -162,9 +203,11 @@ app.get('/genre', async (req, res) => {
       }))
     })
   } catch (error) {
+    console.error('Get genre songs error:', error)
     res.status(500).json({ 
       code: 500,
-      msg: 'Failed to get genre songs' 
+      msg: 'Failed to get genre songs',
+      error: error.message
     })
   }
 })
