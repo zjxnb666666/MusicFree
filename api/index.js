@@ -1,58 +1,47 @@
 const express = require('express')
-const { createWebAPIRequest } = require('../util/util')
-
+const axios = require('axios')
 const app = express()
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+// 基础配置
+const BASE_URL = 'https://music.163.com/api'
+const DEFAULT_TIMEOUT = 5000
 
-// 添加错误处理中间件
+// 创建 axios 实例
+const request = axios.create({
+  baseURL: BASE_URL,
+  timeout: DEFAULT_TIMEOUT,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Referer': 'https://music.163.com'
+  }
+})
+
+// 错误处理中间件
 app.use((err, req, res, next) => {
-  console.error(err.stack)
+  console.error('Error:', err)
   res.status(500).json({
     code: 500,
-    msg: 'Internal Server Error',
+    message: 'Internal Server Error',
     error: err.message
   })
 })
 
-// 添加CORS支持
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  next()
-})
-
 // 搜索接口
-app.get('/search', (req, res) => {
-  const { keywords, limit = 30, offset = 0 } = req.query
-  const cookie = req.get('Cookie') ? req.get('Cookie') : ''
-  const data = {
-    csrf_token: '',
-    limit,
-    type: 1,
-    s: keywords,
-    offset
+app.get('/search', async (req, res) => {
+  try {
+    const { keywords, limit = 30 } = req.query
+    const response = await request.get('/search/suggest', {
+      params: { keywords, limit }
+    })
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).json({ error: 'Search failed' })
   }
-
-  createWebAPIRequest(
-    'music.163.com',
-    '/weapi/search/get',
-    'POST',
-    data,
-    cookie,
-    (music_req, music_res) => {
-      try {
-        res.json(JSON.parse(music_res))
-      } catch (e) {
-        res.status(500).json({ error: 'Parse Error' })
-      }
-    },
-    err => res.status(502).json({ error: 'API Error', message: err.message })
-  )
 })
 
-// ... 其他接口保持不变
+// 健康检查
+app.get('/status', (req, res) => {
+  res.json({ status: 'ok' })
+})
 
 module.exports = app
