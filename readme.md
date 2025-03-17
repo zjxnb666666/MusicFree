@@ -11,13 +11,13 @@
 
 一个插件化、定制化、无广告的免费音乐播放器，目前只支持 Android 和 Harmony OS。
 
-> **桌面版来啦：<https://github.com/maotoumao/MusicFreeDesktop>**
+> **桌面版来啦：<https://github.com/zjxnb666666/MusicFree/releases>**
 
 如果需要了解后续进展可以关注公众号↓；如果有问题可以在 issue 区或者公众号直接留言反馈。
 
-![微信公众号](./src/assets/imgs/wechat_channel.jpg)
+![微信公众号](https://github.com/zjxnb666666/MusicFree/releases)
 
-软件下载方式、插件使用说明、插件开发文档可去站点 [https://musicfree.catcat.work](https://musicfree.catcat.work) 查看。
+软件下载方式、插件使用说明、插件开发文档可去站点 [https://github.com/zjxnb666666/MusicFree/releases](https://github.com/zjxnb666666/MusicFree/releases) 查看。
 
 > [!NOTE]
 > - 如果你在其他的平台看到收费版/无广告版/破解版，都是假的，本来就是开源项目，**遇到收费版请直接举报**；
@@ -31,7 +31,7 @@
 本项目基于 AGPL 3.0 协议开源，使用此项目时请遵守开源协议。  
 除此外，希望你在使用代码时已经了解以下额外说明：
 
-1. 打包、二次分发 **请保留代码出处**：https://github.com/maotoumao/MusicFree
+1. 打包、二次分发 **请保留代码出处**：https://github.com/zjxnb666666/MusicFree/releases
 2. 请不要用于商业用途，合法合规使用代码；
 3. 如果开源协议变更，将在此 Github 仓库更新，不另行通知。
 
@@ -51,7 +51,7 @@
 
 插件本质上是一个满足插件协议的 commonjs 模块。插件中定义了搜索（音乐、专辑、作者）、播放、查看专辑、作者详细信息、导入歌单、获取歌词等基本函数，插件的开发者只需要关心输入输出逻辑，至于分页、缓存等全都交给 MusicFree 控制即可。本软件通过插件来完成播放器的所有功能，这样解耦的设计也可以使得本软件可以专注于做一个功能完善的播放器，我直呼小而美。
 
-插件开发文档可以参考 [这里](https://musicfree.catcat.work/plugin/introduction.html)
+插件开发文档可以参考 [这里](https://github.com/zjxnb666666/MusicFree/releases)
 
 需要注意的是：
 
@@ -61,24 +61,24 @@
 
 ### 插件使用
 
-下载 app 之后，只需要在侧边栏设置-插件设置中安装插件即可。支持安装本地插件和从网络安装插件（支持解析.js 文件和.json 描述文件；已经写了几个示意的插件：[指路这个仓库](https://github.com/maotoumao/MusicFreePlugins)，不过可能功能不是很完善）；
+下载 app 之后，只需要在侧边栏设置-插件设置中安装插件即可。支持安装本地插件和从网络安装插件（支持解析.js 文件和.json 描述文件；已经写了几个示意的插件：[指路这个仓库](https://github.com/zjxnb666666/MusicFree/releases)，不过可能功能不是很完善）；
 
 
-你可以直接点击从网络安装插件，然后输入<https://gitee.com/maotoumao/MusicFreePlugins/raw/master/plugins.json> ，点击确认即可安装。
+你可以直接点击从网络安装插件，然后输入<https://github.com/zjxnb666666/MusicFree/releases> ，点击确认即可安装。
 
-图文版详细使用说明可以参考公众号：[MusicFree 插件使用指南](https://mp.weixin.qq.com/s?__biz=MzkxOTM5MDI4MA==&mid=2247483875&idx=1&sn=aedf8bb909540634d927de7fd2b4b8b1&chksm=c1a390c4f6d419d233908bb781d418c6b9fd2ca82e9e93291e7c93b8ead3c50ca5ae39668212#rd)，或者站点： https://musicfree.catcat.work/usage/mobile/install-plugin.html
+图文版详细使用说明可以参考公众号：[MusicFree 插件使用指南](https://github.com/zjxnb666666/MusicFree/releases)，或者站点： https://github.com/zjxnb666666/MusicFree/releases
 
 ## 下载地址
 
-请转到发布页查看：[指路](https://github.com/maotoumao/MusicFree/releases) (如果打不开可以把 github 换成 gitee)，公众号回复 Musicfree 也可以。
+请转到发布页查看：[指路](https://github.com/zjxnb666666/MusicFree/releases) (如果打不开可以把 github 换成 gitee)，公众号回复 Musicfree 也可以。
 
 ## Q&A
 
-使用时遇到的常见问题可以看这里：[MusicFree 使用 Q&A](https://musicfree.catcat.work/qa/common.html)
+使用时遇到的常见问题可以看这里：[MusicFree 使用 Q&A](https://github.com/zjxnb666666/MusicFree/releases)
 
-技术交流/一起写点有意思的东西/技术向的闲聊欢迎加群：[683467814](https://jq.qq.com/?_wv=1027&k=upVpi2k3)~ （不是答疑群）
+技术交流/一起写点有意思的东西/技术向的闲聊欢迎加群：[683467814](https://github.com/zjxnb666666/MusicFree/releases)~ （不是答疑群）
 
-闲聊可以到 [QQ 频道](https://pd.qq.com/s/cyxnf0jj1)~
+闲聊可以到 [QQ 频道](https://github.com/zjxnb666666/MusicFree/releases)~
 
 ## WIP
 
@@ -89,19 +89,19 @@
 如果你喜欢这个项目，或者希望我可以持续维护下去，你可以通过以下任何一种方式支持我;)
 
 1. Star 这个项目，分享给你身边的人；
-2. 关注公众号👇或 b 站 [不想睡觉猫头猫](https://space.bilibili.com/12866223) 获取最新信息；
+2. 关注公众号👇或 b 站 [不想睡觉猫头猫](https://github.com/zjxnb666666/MusicFree/releases) 获取最新信息；
 
-![微信公众号](./src/assets/imgs/wechat_channel.jpg)
+![微信公众号](https://github.com/zjxnb666666/MusicFree/releases)
 
 感谢以下小伙伴的推荐，很意外也很惊喜 ~~~
 
-来自**果核剥壳**的安利~ <https://mp.weixin.qq.com/s/F6hMbLv_a-Ty0fPA_0P0Rg>
+来自**果核剥壳**的安利~ <https://github.com/zjxnb666666/MusicFree/releases>
 
-来自**小棉袄**的安利~ <https://mp.weixin.qq.com/s/Fqe3o7vcTw0KDKoB-gsQfg>
+来自**小棉袄**的安利~ <https://github.com/zjxnb666666/MusicFree/releases>
 
 ## ChangeLog
 
-[点击这里](./changelog.md)
+[点击这里](https://github.com/zjxnb666666/MusicFree/releases)
 
 ---
 本项目仅供学习参考使用，基于 AGPL3.0 协议开源；请在符合法律法规的情况下合理使用本项目，禁止用于商业目的使用。
@@ -112,32 +112,32 @@
 
 #### 主界面
 
-![主界面](./.imgs/main.jpg)
+![主界面](https://github.com/zjxnb666666/MusicFree/releases)
 
 #### 侧边栏
 
 - 基础设置
-  ![基础设置](./.imgs/basic-setting.jpg)
+  ![基础设置](https://github.com/zjxnb666666/MusicFree/releases)
 
 - 主题设置
-  ![主题设置](./.imgs/theme-setting.jpg)
+  ![主题设置](https://github.com/zjxnb666666/MusicFree/releases)
 
 #### 音乐相关
 
 - 歌单页
-  ![歌单页](./.imgs/song-sheet.jpg)
+  ![歌单页](https://github.com/zjxnb666666/MusicFree/releases)
 
 - 歌单内检索
-  ![歌单内检索](./.imgs/search-in-sheet.jpg)
+  ![歌单内检索](https://github.com/zjxnb666666/MusicFree/releases)
 
 - 播放页
-  ![播放页](./.imgs/song-cover.jpg)
+  ![播放页](https://github.com/zjxnb666666/MusicFree/releases)
 
 - 歌词页
-  ![歌词页](./.imgs/song-lrc.jpg)
+  ![歌词页](https://github.com/zjxnb666666/MusicFree/releases)
 
 
 #### 搜索相关
 
 - 作者信息
-  ![专辑信息](./.imgs/artist-detail.jpg)
+  ![专辑信息](https://github.com/zjxnb666666/MusicFree/releases)
